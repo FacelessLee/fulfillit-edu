@@ -1,9 +1,10 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-type UserRole = 'student' | 'teacher' | 'admin';
+// Define user roles for type safety
+export type UserRole = 'student' | 'teacher' | 'admin';
 
-type User = {
+export type User = {
   id: string;
   name: string;
   email: string;

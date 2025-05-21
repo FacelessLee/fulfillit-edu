@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { GraduationCap } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -15,23 +16,26 @@ const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent, role: string) => {
     e.preventDefault();
     setIsLoading(true);
+    
+    // Append role to email if not already included
+    const loginEmail = email.includes(role) ? email : `${role}@example.com`;
 
     try {
-      await login(email, password);
+      await login(loginEmail, password);
       toast({
         title: 'Login successful',
         description: 'Welcome to FulfillIT LMS!',
       });
       
-      // Determine where to redirect based on email domain
-      if (email.includes('student')) {
+      // Redirect based on role
+      if (loginEmail.includes('student')) {
         navigate('/student/dashboard');
-      } else if (email.includes('teacher')) {
+      } else if (loginEmail.includes('teacher')) {
         navigate('/teacher/dashboard');
-      } else if (email.includes('admin')) {
+      } else if (loginEmail.includes('admin')) {
         navigate('/admin/dashboard');
       } else {
         navigate('/');
@@ -55,54 +59,136 @@ const Login = () => {
             <GraduationCap className="h-8 w-8 text-lms-green" />
           </div>
           <h1 className="text-2xl font-bold">Sign in to FulfillIT LMS</h1>
-          <p className="text-gray-500 mt-2 text-sm">Enter your credentials below</p>
+          <p className="text-gray-500 mt-2 text-sm">Access the Learning Management System</p>
         </div>
         
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium">
-              Email
-            </label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="your.email@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full"
-            />
-            <p className="text-xs text-gray-500">
-              Hint: Use student@example.com, teacher@example.com, or admin@example.com
-            </p>
-          </div>
+        <Tabs defaultValue="student" className="w-full">
+          <TabsList className="grid grid-cols-3 mb-6">
+            <TabsTrigger value="student">Student</TabsTrigger>
+            <TabsTrigger value="teacher">Teacher</TabsTrigger>
+            <TabsTrigger value="admin">Admin</TabsTrigger>
+          </TabsList>
           
-          <div className="space-y-2">
-            <label htmlFor="password" className="text-sm font-medium">
-              Password
-            </label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full"
-            />
-            <p className="text-xs text-gray-500">
-              (Any password will work for demo purposes)
-            </p>
-          </div>
+          <TabsContent value="student">
+            <form className="space-y-6" onSubmit={(e) => handleSubmit(e, 'student')}>
+              <div className="space-y-2">
+                <label htmlFor="email-student" className="text-sm font-medium">
+                  Email
+                </label>
+                <Input
+                  id="email-student"
+                  type="email"
+                  placeholder="student@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="password-student" className="text-sm font-medium">
+                  Password
+                </label>
+                <Input
+                  id="password-student"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full"
+                />
+              </div>
 
-          <Button
-            type="submit"
-            className="w-full bg-lms-green hover:bg-lms-green/90"
-            disabled={isLoading}
-          >
-            {isLoading ? "Signing in..." : "Sign in"}
-          </Button>
-        </form>
+              <Button
+                type="submit"
+                className="w-full bg-lms-green hover:bg-lms-green/90"
+                disabled={isLoading}
+              >
+                {isLoading ? "Signing in..." : "Sign in as Student"}
+              </Button>
+            </form>
+          </TabsContent>
+          
+          <TabsContent value="teacher">
+            <form className="space-y-6" onSubmit={(e) => handleSubmit(e, 'teacher')}>
+              <div className="space-y-2">
+                <label htmlFor="email-teacher" className="text-sm font-medium">
+                  Email
+                </label>
+                <Input
+                  id="email-teacher"
+                  type="email"
+                  placeholder="teacher@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="password-teacher" className="text-sm font-medium">
+                  Password
+                </label>
+                <Input
+                  id="password-teacher"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full bg-lms-green hover:bg-lms-green/90"
+                disabled={isLoading}
+              >
+                {isLoading ? "Signing in..." : "Sign in as Teacher"}
+              </Button>
+            </form>
+          </TabsContent>
+          
+          <TabsContent value="admin">
+            <form className="space-y-6" onSubmit={(e) => handleSubmit(e, 'admin')}>
+              <div className="space-y-2">
+                <label htmlFor="email-admin" className="text-sm font-medium">
+                  Email
+                </label>
+                <Input
+                  id="email-admin"
+                  type="email"
+                  placeholder="admin@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="password-admin" className="text-sm font-medium">
+                  Password
+                </label>
+                <Input
+                  id="password-admin"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full bg-lms-green hover:bg-lms-green/90"
+                disabled={isLoading}
+              >
+                {isLoading ? "Signing in..." : "Sign in as Admin"}
+              </Button>
+            </form>
+          </TabsContent>
+        </Tabs>
 
         <div className="text-center mt-4">
           <a href="/" className="text-lms-green hover:text-lms-green/80 text-sm">
