@@ -1,13 +1,13 @@
 
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { Topic, Resource } from '@/models/curriculum';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { X, Plus, File } from 'lucide-react';
+import { X, Plus } from 'lucide-react';
 import { 
   Form,
   FormControl,
@@ -55,7 +55,8 @@ export const TopicEditor: React.FC<TopicEditorProps> = ({
     defaultValues
   });
 
-  const { fields, append, remove } = form.useFieldArray({
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
     name: 'resources'
   });
 
